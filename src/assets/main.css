@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: aliceblue;
+    font-family: 'Goldman', sans-serif;
+    user-select: none;
+}
+
+body {
+    background: #242424;
+    background: linear-gradient(45deg, rgba(36,36,36,1) 0%, rgba(29,29,29,1) 100%);
+    max-width: 1290px;
+    height: var(--tg-viewport-stable-height);
+    overflow-x: hidden;
+}
