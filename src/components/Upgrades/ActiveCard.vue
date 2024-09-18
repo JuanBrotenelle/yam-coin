@@ -24,7 +24,7 @@ const claimBonus = async () => {
     const { _id: bonusId, value, type } = props.gift; // Обращение через props.gift
 
     // Отправляем запрос на сервер
-    const response = await axios.post("http://127.0.0.1:3000/gifts", {
+    const response = await axios.post("https://yamonton.space/gifts", {
       userId,
       bonusId,
       token,

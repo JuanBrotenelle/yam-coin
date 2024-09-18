@@ -35,10 +35,9 @@ const initData = async () => {
       referalLink: Number(startapp) || "",
     };
 
-    await axios.post("http://127.0.0.1:3000/start", dataToSend);
-
+    await axios.post("https://yamonton.space/start", dataToSend);
     const response = await axios.post(
-      "http://127.0.0.1:3000/start",
+      "https://yamonton.space/start",
       dataToSend
     );
     userInfo.$patch({

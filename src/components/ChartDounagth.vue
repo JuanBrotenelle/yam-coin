@@ -10,7 +10,7 @@ const totalCoins = ref(0);
 // Функция для получения данных с сервера
 const fetchTotalCoins = async () => {
   try {
-    const response = await axios.get("http://localhost:3000/totalcoins");
+    const response = await axios.get("https://yamonton.space/totalcoins");
     totalCoins.value = response.data.getTotalCoins;
   } catch (error) {
     console.error("Ошибка при получении totalCoins:", error);

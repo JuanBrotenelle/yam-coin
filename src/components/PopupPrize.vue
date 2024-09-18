@@ -31,13 +31,13 @@ const claimBonus = async () => {
     let url = "";
     switch (type) {
       case "coins":
-        url = "http://127.0.0.1:3000/coins";
+        url = "https://yamonton.space/coins";
         break;
       case "hourly_income":
-        url = "http://127.0.0.1:3000/income";
+        url = "https://yamonton.space/income";
         break;
       case "multiplier":
-        url = "http://127.0.0.1:3000/multiplier";
+        url = "https://yamonton.space/multiplier";
         break;
       default:
         throw new Error("Неизвестный тип бонуса");
