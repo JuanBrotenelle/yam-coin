@@ -36,5 +36,6 @@ export const useUserInfo = defineStore('userInfo', () => {
     default: [],
     gifts: [],
   });
-  return { userYams, userIncome, token, bonuses, userId, referals };
+  const isLoading = ref(true);
+  return { userYams, userIncome, token, bonuses, userId, referals, isLoading };
 });

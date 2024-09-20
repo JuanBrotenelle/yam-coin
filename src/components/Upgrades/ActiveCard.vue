@@ -24,13 +24,21 @@ const claimBonus = async () => {
     const { _id: bonusId, value, type } = props.gift; // Обращение через props.gift
 
     // Отправляем запрос на сервер
-    const response = await axios.post("https://yamonton.space/gifts", {
-      userId,
-      bonusId,
-      token,
-      value,
-      type, // Добавляем тип бонуса в запрос
-    });
+    const response = await axios.post(
+      "https://yamonton.space/gifts",
+      {
+        userId,
+        bonusId,
+        token,
+        value,
+        type, // Добавляем тип бонуса в запрос
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     // Логирование ответа для отладки
     console.log("Response from server:", response.data);
@@ -43,7 +51,8 @@ const claimBonus = async () => {
         token: response.data.token,
         bonuses: response.data.bonuses,
       });
-      console.log(userInfo.bonuses);
+
+      props.gift.status = "used";
     } else {
       console.error("Failed to claim bonus: No data in response");
     }

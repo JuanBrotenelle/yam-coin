@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, onBeforeUnmount, watch } from "vue";
+import { ref, onMounted, onBeforeUnmount, watch, computed } from "vue";
 import axios from "axios";
 import { useRoute } from "vue-router";
 import { useUserInfo } from "../../stores/counter";
@@ -8,12 +8,11 @@ import { animateNumber } from "../../composables/useAnimateNumber";
 const userInfo = useUserInfo();
 const route = useRoute();
 
-// Состояние для хранения totalCoins
 const totalCoins = ref(0);
-const incomeRef = ref(userInfo.userIncome);
 const balanceRef = ref(userInfo.userYams);
+const incomeRef = ref(userInfo.userIncome);
 
-// Функция для получения данных с сервера
+// Получение данных с сервера
 const fetchTotalCoins = async () => {
   try {
     const response = await axios.get("https://yamonton.space/totalcoins");
@@ -23,41 +22,87 @@ const fetchTotalCoins = async () => {
   }
 };
 
-const isActive = (path: string) => route.path === path;
+// Функция для анимации значений
+const animateTotalCoins = (newTotalCoins: number) => {
+  animateNumber(totalCoins.value, newTotalCoins, 1000, (value) => {
+    totalCoins.value = value;
+  });
+};
+
+const animateUserYams = (newYams: number) => {
+  animateNumber(userInfo.userYams, newYams, 1000, (value) => {
+    userInfo.userYams = value;
+  });
+};
+
+const animateUserIncome = (newIncome: number) => {
+  animateNumber(userInfo.userIncome, newIncome, 1000, (value) => {
+    userInfo.userIncome = value;
+  });
+};
+
+// Computed значения для обновления UI
+const formattedTotalCoins = computed(() =>
+  totalCoins.value >= 10000
+    ? totalCoins.value.toFixed(1)
+    : totalCoins.value.toFixed(3)
+);
+
+const formattedUserYams = computed(() =>
+  userInfo.userYams >= 10000
+    ? userInfo.userYams.toFixed(1)
+    : userInfo.userYams.toFixed(3)
+);
+
+const formattedUserIncome = computed(() =>
+  userInfo.userIncome >= 10000
+    ? userInfo.userIncome.toFixed(1)
+    : userInfo.userIncome.toFixed(3)
+);
+
+// Функция для проверки активного маршрута
+const isActive = (path: string) => {
+  return route.path === path;
+};
 
 let intervalId: number | undefined;
 
 onMounted(() => {
-  // Первый запрос при инициализации компонента
   fetchTotalCoins();
 
-  // Устанавливаем интервал для выполнения запросов каждую минуту
+  // Устанавливаем интервал для обновления данных каждую минуту
   intervalId = window.setInterval(() => {
     fetchTotalCoins();
   }, 60000);
 
-  animateNumber(0, totalCoins.value, 1000, (value: number) => {
-    balanceRef.value = value; // Обновляем анимированное значение
-  });
-  animateNumber(0, userInfo.userYams, 1000, (value: number) => {
-    balanceRef.value = value; // Обновляем анимированное значение
-  });
-  animateNumber(0, userInfo.userIncome, 1000, (value: number) => {
-    balanceRef.value = value; // Обновляем анимированное значение
-  });
+  // Запускаем анимацию при первой загрузке
+  animateTotalCoins(totalCoins.value);
+  animateUserYams(userInfo.userYams);
+  animateUserIncome(userInfo.userIncome);
 });
 
 watch(
   () => totalCoins.value,
+  (newTotalCoins, oldTotalCoins) => {
+    animateTotalCoins(newTotalCoins);
+  }
+);
+
+watch(
+  () => userInfo.userYams,
   (newYams, oldYams) => {
-    animateNumber(oldYams, newYams, 1000, (value: number) => {
-      balanceRef.value = value;
-    });
+    animateUserYams(newYams);
+  }
+);
+
+watch(
+  () => userInfo.userIncome,
+  (newIncome, oldIncome) => {
+    animateUserIncome(newIncome);
   }
 );
 
 onBeforeUnmount(() => {
-  // Очищаем интервал при разрушении компонента
   if (intervalId) {
     clearInterval(intervalId);
   }
@@ -73,39 +118,31 @@ onBeforeUnmount(() => {
       >
         <img src="/Yam.png" alt="" class="w-[2.5vh]" />
         <p class="text-[Goldman] text-[2vh]">
-          {{
-            balanceRef >= 10000 ? totalCoins.toFixed(1) : totalCoins.toFixed(3)
-          }}
+          {{ formattedTotalCoins }}
         </p>
       </div>
     </div>
-    <div v-if="!isActive('/')" class="flex flex-col items-center w-[35%]">
-      <p class="text-[Goldman] text-[1.5vh]">Your $YAM:</p>
-      <div
-        class="flex flex-row items-center justify-center bg-[#2B2B2B] w-full rounded-full"
-      >
-        <img src="/Yam.png" alt="" class="w-[2.5vh]" />
-        <p class="text-[Goldman] text-[2vh]">
-          {{
-            userInfo.userYams >= 10000
-              ? userInfo.userYams.toFixed(1)
-              : userInfo.userYams.toFixed(3)
-          }}
-        </p>
-      </div>
-    </div>
-    <div v-if="isActive('/')" class="flex flex-col items-center w-[35%]">
+
+    <div v-if="isActive('/main')" class="flex flex-col items-center w-[35%]">
       <p class="text-[Goldman] text-[1.5vh]">Passive income:</p>
       <div
         class="flex flex-row items-center justify-center bg-[#2B2B2B] w-full rounded-full"
       >
         <img src="/Yam.png" alt="" class="w-[2.5vh]" />
         <p class="text-[Goldman] text-[2vh]">
-          {{
-            userInfo.userIncome >= 10000
-              ? userInfo.userIncome.toFixed(1)
-              : userInfo.userIncome.toFixed(3)
-          }}
+          {{ formattedUserIncome }}
+        </p>
+      </div>
+    </div>
+
+    <div v-else class="flex flex-col items-center w-[35%]">
+      <p class="text-[Goldman] text-[1.5vh]">Your $YAM:</p>
+      <div
+        class="flex flex-row items-center justify-center bg-[#2B2B2B] w-full rounded-full"
+      >
+        <img src="/Yam.png" alt="" class="w-[2.5vh]" />
+        <p class="text-[Goldman] text-[2vh]">
+          {{ formattedUserYams }}
         </p>
       </div>
     </div>

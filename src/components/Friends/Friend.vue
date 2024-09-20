@@ -19,11 +19,7 @@ const props = defineProps<{
     <div class="flex flex-row gap-3">
       <div class="h-[8vh] w-[8vh] rounded-[20px]">
         <img
-          :src="
-            props.friend.photoUrl != ''
-              ? props.friend.photoUrl
-              : '../../../public/NoAvatar.png'
-          "
+          :src="props.friend.photoUrl ? props.friend.photoUrl : '/NoAvatar.png'"
           class="rounded-[20px]"
           alt=""
         />

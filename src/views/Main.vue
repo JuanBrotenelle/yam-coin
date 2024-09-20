@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, computed, watch } from "vue";
-import { useScratchGame } from "@/composables/useScratchGame";
+import { ref, onMounted, onUnmounted, computed, watch, nextTick } from "vue";
+import { useScratchGame } from "../composables/useScratchGame";
 import HeaderMain from "../components/Header/HeaderMain.vue";
 import PopupPrize from "../components/PopupPrize.vue";
 import { useUserInfo } from "../stores/counter";
-import { animateNumber } from "../composables/useAnimateNumber"; // Импорт функции
+import { animateNumber } from "../composables/useAnimateNumber";
 
 const userInfo = useUserInfo();
 const usedBonuses = computed(() =>
@@ -16,11 +16,14 @@ const PopupPrizeFunction = () => {
 };
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);
-const balanceRef = ref(userInfo.userYams); // Создаем реф для анимации баланса
+const balanceRef = ref(userInfo.userYams);
 
-const { setup, cleanup } = useScratchGame(canvasRef, PopupPrizeFunction);
+const { setup, cleanup } = useScratchGame(
+  canvasRef,
+  PopupPrizeValue,
+  PopupPrizeFunction
+);
 
-// Таймер
 const timeRemaining = ref<{ hours: string; minutes: string; seconds: string }>({
   hours: "00",
   minutes: "00",
@@ -30,9 +33,14 @@ const timeRemaining = ref<{ hours: string; minutes: string; seconds: string }>({
 const updateTimeRemaining = () => {
   const now = new Date();
   const nextMidnight = new Date();
-  nextMidnight.setHours(24, 0, 0, 0);
+
+  nextMidnight.setUTCHours(24, 0, 0, 0);
 
   const diff = nextMidnight.getTime() - now.getTime();
+
+  if (diff <= 0) {
+    window.location.reload();
+  }
 
   const hours = Math.floor(diff / (1000 * 60 * 60));
   const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
@@ -45,12 +53,12 @@ const updateTimeRemaining = () => {
   };
 };
 
-onMounted(() => {
-  setup();
+onMounted(async () => {
+  await nextTick();
 
-  animateNumber(0, userInfo.userYams, 1000, (value: number) => {
-    balanceRef.value = value; // Обновляем анимированное значение
-  });
+  if (canvasRef.value) {
+    setup();
+  }
 
   updateTimeRemaining();
   const timer = setInterval(updateTimeRemaining, 1000);
@@ -81,7 +89,6 @@ watch(
     <p class="text-[2vh] text-center px-[10vw] mt-5 relative">Your Balance:</p>
     <p class="text-[8vh] text-center px-[10vw] mt-[-2vh] font-bold relative">
       {{ balanceRef.toFixed(3) }}
-      <!-- Используем анимированное значение -->
     </p>
     <div
       v-if="usedBonuses.length !== 0"
@@ -94,18 +101,27 @@ watch(
       >
         Your browser does not support the canvas element.
       </canvas>
-      <p class="text-[10vh] bonus-text-selector">0.15</p>
+      <p
+        v-if="
+          usedBonuses[0].type === 'coins' ||
+          usedBonuses[0].type === 'hourly_income'
+        "
+        class="text-[6vh] bonus-text-selector"
+      >
+        {{ usedBonuses[0].value }}
+      </p>
+      <p v-else class="text-[6vh] bonus-text-selector">💎</p>
     </div>
     <p v-if="usedBonuses.length !== 0" class="text-[3vh] text-center mt-5">
       Scratch. Left {{ usedBonuses.length }}/3
     </p>
     <div
-      v-else
+      v-if="usedBonuses.length === 0"
       class="text-center mt-5 flex flex-col items-center bg-[#242424] rounded-[25px] mt-5 p-10"
     >
       <svg
-        width="150"
-        height="150"
+        width="100"
+        height="100"
         viewBox="0 0 706 706"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

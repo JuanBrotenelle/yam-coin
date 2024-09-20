@@ -44,12 +44,20 @@ const claimBonus = async () => {
     }
 
     // Отправляем запрос на сервер
-    const response = await axios.post(url, {
-      userId,
-      bonusId,
-      token,
-      value,
-    });
+    const response = await axios.post(
+      url,
+      {
+        userId,
+        bonusId,
+        token,
+        value,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     // Логирование ответа для отладки
     console.log("Response from server:", response.data);
@@ -86,11 +94,23 @@ const claimBonus = async () => {
         <div
           class="bg-[#222222] w-full h-[35vh] rounded-[25px] flex flex-col items-center justify-center"
         >
-          <p class="text-[5vh]">{{ bonus.value.toFixed(3) }}</p>
+          <p
+            v-if="bonus.type === 'coins' || bonus.type === 'hourly_income'"
+            class="text-[5vh]"
+          >
+            {{ bonus.value.toFixed(3) }}
+          </p>
+          <p v-else class="text-[5vh]">💎</p>
         </div>
         <p class="text-center text-[3vh] mt-5">Congratulations! 🎉🎊</p>
-        <p class="text-center text-[2vh]">
+        <p v-if="bonus.type === 'coins'" class="text-center text-[2vh]">
           You received {{ bonus.value.toFixed(3) }} $YAM
+        </p>
+        <p v-if="bonus.type === 'hourly_income'" class="text-center text-[2vh]">
+          You received {{ bonus.value.toFixed(3) }} $YAM per hour
+        </p>
+        <p v-if="bonus.type === 'multiplier'" class="text-center text-[2vh]">
+          You $YAMS will be multiplied x{{ bonus.value.toFixed(3) }}
         </p>
       </div>
       <button

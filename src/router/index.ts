@@ -2,18 +2,12 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 const isMobileDevice = () => {
   const userAgent = navigator.userAgent || navigator.platform;
-
-  // Проверяем на Android устройства
-  //if (/android/i.test(userAgent)) {
-  //  return true;
-  //}
-//
-  //// Проверяем на iOS устройства
-  //if (/iPad|iPhone|iPod/.test(userAgent)) {
-  //  return true;
-  //}
-
-  return true;
+ if (/android/i.test(userAgent)) {
+   return true;
+ }
+ if (/iPad|iPhone|iPod/.test(userAgent)) {
+   return true;
+ }
 };
 
 const router = createRouter({
@@ -21,14 +15,25 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: 'loading',
+      component: () => import('../views/Loading.vue'),
+      beforeEnter: (to, from, next) => {
+        if (!isMobileDevice()) {
+          next({ name: 'not-allowed' });
+        } else {
+          next();
+        }
+      }
+    },
+    {
+      path: '/main',
       name: 'home',
       component: () => import('../views/Main.vue'),
       beforeEnter: (to, from, next) => {
         if (!isMobileDevice()) {
-          // Если не мобильное устройство, перенаправляем на страницу с запретом
           next({ name: 'not-allowed' });
         } else {
-          next(); // Продолжаем, если мобильное устройство
+          next();
         }
       }
     },
@@ -38,10 +43,9 @@ const router = createRouter({
       component: () => import('../views/Upgrades.vue'),
       beforeEnter: (to, from, next) => {
         if (!isMobileDevice()) {
-          // Если не мобильное устройство, перенаправляем на страницу с запретом
           next({ name: 'not-allowed' });
         } else {
-          next(); // Продолжаем, если мобильное устройство
+          next();
         }
       }
     },
@@ -51,10 +55,10 @@ const router = createRouter({
       component: () => import('../views/Friends.vue'),
       beforeEnter: (to, from, next) => {
         if (!isMobileDevice()) {
-          // Если не мобильное устройство, перенаправляем на страницу с запретом
+          
           next({ name: 'not-allowed' });
         } else {
-          next(); // Продолжаем, если мобильное устройство
+          next();
         }
       }
     },
@@ -64,10 +68,9 @@ const router = createRouter({
       component: () => import('../views/Wallet.vue'),
       beforeEnter: (to, from, next) => {
         if (!isMobileDevice()) {
-          // Если не мобильное устройство, перенаправляем на страницу с запретом
           next({ name: 'not-allowed' });
         } else {
-          next(); // Продолжаем, если мобильное устройство
+          next();
         }
       }
     },

@@ -1,7 +1,12 @@
-import { ref} from "vue";
+import { ref } from "vue";
+import type { Ref } from "vue";
 import { initHapticFeedback } from "@telegram-apps/sdk";
 
-export function useScratchGame(canvasRef: Ref<HTMLCanvasElement | null>, PopupPrizeFunction: () => void) {
+export function useScratchGame(
+  canvasRef: Ref<HTMLCanvasElement | null>,
+  PopupPrizeValue: Ref<boolean>,
+  PopupPrizeFunction: () => void
+) {
   const hapticFeedback = initHapticFeedback();
   let canvas: HTMLCanvasElement | null = null;
   let ctx: CanvasRenderingContext2D | null = null;
@@ -54,6 +59,7 @@ export function useScratchGame(canvasRef: Ref<HTMLCanvasElement | null>, PopupPr
   }
 
   function startScratch(event: MouseEvent | TouchEvent) {
+    if (PopupPrizeValue.value) return; // Запретить скретч, если PopupPrizeValue == true
     isScratching = true;
     const { x, y } = getCoordinates(event);
     lastX = x;
@@ -81,11 +87,13 @@ export function useScratchGame(canvasRef: Ref<HTMLCanvasElement | null>, PopupPr
       (rect.bottom - canvasRect.top) * scaleFactor,
       canvas.height
     );
+
     const width = xEnd - xStart;
     const height = yEnd - yStart;
     if (width <= 0 || height <= 0) return;
     const imageData = ctx.getImageData(xStart, yStart, width, height);
     const totalPixels = imageData.width * imageData.height;
+
     let clearedPixels = 0;
     for (let i = 0; i < totalPixels * 4; i += 4) {
       const alpha = imageData.data[i + 3];
@@ -101,7 +109,7 @@ export function useScratchGame(canvasRef: Ref<HTMLCanvasElement | null>, PopupPr
   }
 
   function scratch(event: MouseEvent | TouchEvent) {
-    if (!isScratching || !ctx || !canvas) return;
+    if (!isScratching || !ctx || !canvas || PopupPrizeValue.value) return; // Запретить скретч, если PopupPrizeValue == true
     const { x, y } = getCoordinates(event);
     ctx.globalCompositeOperation = "destination-out";
     ctx.lineWidth = 30;
@@ -116,10 +124,11 @@ export function useScratchGame(canvasRef: Ref<HTMLCanvasElement | null>, PopupPr
     lastX = x;
     lastY = y;
     hapticFeedback.impactOccurred("soft");
-    calculateTextVisibility(); 
+    calculateTextVisibility();
   }
 
   function endScratch() {
+    if (PopupPrizeValue.value) return; // Запретить завершение скретча, если PopupPrizeValue == true
     isScratching = false;
     lastX = null;
     lastY = null;

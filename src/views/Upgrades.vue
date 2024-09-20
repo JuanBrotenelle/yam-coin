@@ -6,19 +6,20 @@ import { useUserInfo } from "../stores/counter";
 import ActiveCard from "../components/Upgrades/ActiveCard.vue";
 import HistoryCard from "../components/Upgrades/HistoryCard.vue";
 import { animateNumber } from "../composables/useAnimateNumber";
+
 const userInfo = useUserInfo();
-
 const incomeRef = ref(userInfo.userIncome);
-
 const gifts = userInfo.bonuses.gifts;
-console.log(gifts);
 
 const claimedDefaultBonuses = computed(() =>
   userInfo.bonuses.default.filter((bonus) => bonus.status === "used")
 );
 
-const hapticFeedback = initHapticFeedback();
+const sortedGifts = computed(() => {
+  return [...gifts].sort((a, b) => (a.status === "inactive" ? -1 : 1));
+});
 
+const hapticFeedback = initHapticFeedback();
 const activeTab = ref("active");
 
 const setActiveTab = (tab: string) => {
@@ -26,14 +27,8 @@ const setActiveTab = (tab: string) => {
   hapticFeedback.impactOccurred("soft");
 };
 
-onMounted(() => {
-  animateNumber(0, userInfo.userIncome, 1000, (value: number) => {
-    incomeRef.value = value;
-  });
-});
-
 watch(
-  () => userInfo.userYams,
+  () => userInfo.userIncome,
   (newYams, oldYams) => {
     animateNumber(oldYams, newYams, 1000, (value: number) => {
       incomeRef.value = value;
@@ -73,12 +68,14 @@ watch(
       </p>
     </div>
   </div>
+
   <div
     class="h-[57vh] w-full overflow-x-hidden overflow-y-auto grid-active"
     v-if="activeTab === 'active'"
   >
-    <ActiveCard v-for="gift in gifts" :key="gift._id" :gift="gift" />
+    <ActiveCard v-for="gift in sortedGifts" :key="gift._id" :gift="gift" />
   </div>
+
   <div
     class="h-[57vh] overflow-x-hidden overflow-y-auto flex flex-col gap-3"
     v-if="activeTab === 'history'"

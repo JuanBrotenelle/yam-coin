@@ -6,7 +6,6 @@
     <div
       class="p-5 w-full bg-[#2B2B2B] flex flex-col items-center justify-center rounded-[25px] mt-5 mb-5"
     >
-      <ChartDounagth />
       <p class="mt-5">Max. 75'000</p>
     </div>
     <TonConnectButton />
@@ -14,7 +13,6 @@
 </template>
 
 <script lang="ts" setup>
-import ChartDounagth from "@/components/ChartDounagth.vue";
 import { TonConnectButton, TonConnectUIProvider } from "@townsquarelabs/ui-vue";
 
 const options = {

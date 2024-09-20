@@ -18,13 +18,13 @@ const isActive = (path: string) => {
   >
     <RouterLink
       @click="hapticFeedback.selectionChanged()"
-      to="/"
+      to="/main"
       :class="[
         'flex flex-col items-center w-[10vh] py-4 transition-all',
-        isActive('/') ? 'active' : '',
+        isActive('/main') ? 'active' : '',
       ]"
     >
-      <img src="../../../public/Test Account.png" class="w-[4vh]" alt="" />
+      <img src="/Test Account.png" class="w-[4vh]" alt="" />
       <p class="text-[2vh]">Main</p>
     </RouterLink>
     <RouterLink
@@ -35,7 +35,7 @@ const isActive = (path: string) => {
         isActive('/upgrades') ? 'active' : '',
       ]"
     >
-      <img src="../../../public/Stack of Coins.png" class="w-[4vh]" alt="" />
+      <img src="/Stack of Coins.png" class="w-[4vh]" alt="" />
       <p class="text-[2vh]">Bonuses</p>
     </RouterLink>
     <RouterLink
@@ -46,7 +46,7 @@ const isActive = (path: string) => {
         isActive('/friends') ? 'active' : '',
       ]"
     >
-      <img src="../../../public/Users.png" class="w-[4vh]" alt="" />
+      <img src="/Users.png" class="w-[4vh]" alt="" />
       <p class="text-[2vh]">Friends</p>
     </RouterLink>
     <RouterLink
@@ -57,7 +57,7 @@ const isActive = (path: string) => {
         isActive('/wallet') ? 'active' : '',
       ]"
     >
-      <img src="../../../public/Wallet.png" class="w-[4vh] opacity-50" alt="" />
+      <img src="/Wallet.png" class="w-[4vh] opacity-50" alt="" />
       <p class="text-[2vh] text-[#2B2B2B] text-[#]">Wallet</p>
       <p class="absolute bottom-2 text-[#2B2B2B] text-[1.5vh]">Soon</p>
     </RouterLink>
