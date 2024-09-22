@@ -34,7 +34,6 @@ const handleClick = () => {
     );
   } else {
     console.warn("Clipboard API не поддерживается");
-    // Альтернативный метод для старых браузеров
     const textarea = document.createElement("textarea");
     textarea.value = url;
     document.body.appendChild(textarea);

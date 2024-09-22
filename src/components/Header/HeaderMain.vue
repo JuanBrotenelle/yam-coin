@@ -12,7 +12,6 @@ const totalCoins = ref(0);
 const balanceRef = ref(userInfo.userYams);
 const incomeRef = ref(userInfo.userIncome);
 
-// Получение данных с сервера
 const fetchTotalCoins = async () => {
   try {
     const response = await axios.get("https://yamonton.space/totalcoins");
@@ -22,7 +21,6 @@ const fetchTotalCoins = async () => {
   }
 };
 
-// Функция для анимации значений
 const animateTotalCoins = (newTotalCoins: number) => {
   animateNumber(totalCoins.value, newTotalCoins, 1000, (value) => {
     totalCoins.value = value;
@@ -41,7 +39,6 @@ const animateUserIncome = (newIncome: number) => {
   });
 };
 
-// Computed значения для обновления UI
 const formattedTotalCoins = computed(() =>
   totalCoins.value >= 10000
     ? totalCoins.value.toFixed(1)
@@ -60,7 +57,6 @@ const formattedUserIncome = computed(() =>
     : userInfo.userIncome.toFixed(3)
 );
 
-// Функция для проверки активного маршрута
 const isActive = (path: string) => {
   return route.path === path;
 };
@@ -70,12 +66,10 @@ let intervalId: number | undefined;
 onMounted(() => {
   fetchTotalCoins();
 
-  // Устанавливаем интервал для обновления данных каждую минуту
   intervalId = window.setInterval(() => {
     fetchTotalCoins();
   }, 60000);
 
-  // Запускаем анимацию при первой загрузке
   animateTotalCoins(totalCoins.value);
   animateUserYams(userInfo.userYams);
   animateUserIncome(userInfo.userIncome);

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
-import { useUserInfo } from "../stores/counter"; // Импортируем хранилище Pinia
+import { useUserInfo } from "../stores/counter";
 import { initHapticFeedback } from "@telegram-apps/sdk";
-import axios from "axios"; // Для отправки HTTP-запросов
+import axios from "axios";
 
 const hapticFeedback = initHapticFeedback();
 
@@ -16,18 +16,15 @@ const props = defineProps({
   hidePopup: Function,
 });
 
-const userInfo = useUserInfo(); // Получаем доступ к хранилищу
+const userInfo = useUserInfo();
 
-const bonus = ref(inactiveBonuses.value[0]); // Бонус для отображения
+const bonus = ref(inactiveBonuses.value[0]);
 
-// Функция для отправки POST-запроса и обновления состояния
 const claimBonus = async () => {
   try {
-    // Подготовка данных для запроса
     const { userId, token } = userInfo;
     const { _id: bonusId, value, type } = bonus.value;
 
-    // Определяем URL в зависимости от типа бонуса
     let url = "";
     switch (type) {
       case "coins":
@@ -43,7 +40,6 @@ const claimBonus = async () => {
         throw new Error("Неизвестный тип бонуса");
     }
 
-    // Отправляем запрос на сервер
     const response = await axios.post(
       url,
       {
@@ -59,11 +55,9 @@ const claimBonus = async () => {
       }
     );
 
-    // Логирование ответа для отладки
     console.log("Response from server:", response.data);
 
     if (response.data) {
-      // Обновляем состояние бонусов в Pinia
       userInfo.$patch({
         userYams: response.data.coins,
         userIncome: response.data.hourlyIncome,

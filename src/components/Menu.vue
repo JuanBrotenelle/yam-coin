@@ -66,7 +66,7 @@ const isActive = (path: string) => {
 
 <style scoped>
 .active {
-  background-color: #282828; /* или другой стиль, который вы хотите для активной вкладки */
+  background-color: #282828;
   border-radius: 20px;
 }
 </style>

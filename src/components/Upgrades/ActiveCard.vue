@@ -19,11 +19,9 @@ const props = defineProps<{
 
 const claimBonus = async () => {
   try {
-    // Подготовка данных для запроса
     const { userId, token } = userInfo;
-    const { _id: bonusId, value, type } = props.gift; // Обращение через props.gift
+    const { _id: bonusId, value, type } = props.gift;
 
-    // Отправляем запрос на сервер
     const response = await axios.post(
       "https://yamonton.space/gifts",
       {
@@ -31,7 +29,7 @@ const claimBonus = async () => {
         bonusId,
         token,
         value,
-        type, // Добавляем тип бонуса в запрос
+        type,
       },
       {
         headers: {
@@ -40,11 +38,9 @@ const claimBonus = async () => {
       }
     );
 
-    // Логирование ответа для отладки
     console.log("Response from server:", response.data);
 
     if (response.data) {
-      // Обновляем состояние бонусов в Pinia
       userInfo.$patch({
         userYams: response.data.coins,
         userIncome: response.data.hourlyIncome,

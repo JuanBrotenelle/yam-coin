@@ -47,7 +47,6 @@ watch(
       {{ incomeRef.toFixed(3) }}
     </p>
     <div class="flex flex-row justify-center mt-[] relative w-full">
-      <!-- В зависимости от того, какая вкладка выбрана, применяем разные классы -->
       <p
         :class="[
           'text-[2vh] text-center px-[10vw] mb-5 relative cursor-pointer',
@@ -108,20 +107,20 @@ watch(
 .selecter-menu::after {
   content: "";
   position: absolute;
-  bottom: -2px; /* Сделано для того, чтобы линия находилась ниже текста */
+  bottom: -2px;
   left: 0;
   height: 2px;
   width: 100%;
-  background-color: #ffffff; /* Белая линия для активной вкладки */
+  background-color: #ffffff;
 }
 
 .selecter-menu-none::after {
   content: "";
   position: absolute;
-  bottom: -2px; /* Сделано для того, чтобы линия находилась ниже текста */
+  bottom: -2px;
   left: 0;
   height: 2px;
   width: 100%;
-  background-color: #424242; /* Серая линия для неактивной вкладки */
+  background-color: #424242;
 }
 </style>
