@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useRoute, RouterLink } from "vue-router";
-import { computed } from "vue";
 import { initHapticFeedback } from "@telegram-apps/sdk";
 
 const hapticFeedback = initHapticFeedback();
@@ -14,7 +13,7 @@ const isActive = (path: string) => {
 
 <template>
   <div
-    class="flex flex-row justify-between items-baseline py-2 px-2 bg-[#202020] rounded-tr-[25px] rounded-tl-[25px] absolute bottom-0 left-0 right-0"
+    class="anim-menu flex flex-row justify-between items-baseline p-1 bg-components rounded-tr-[25px] rounded-tl-[25px] fixed bottom-0 left-0 w-full z-[99999]"
   >
     <RouterLink
       @click="hapticFeedback.selectionChanged()"
@@ -24,19 +23,33 @@ const isActive = (path: string) => {
         isActive('/main') ? 'active' : '',
       ]"
     >
-      <img src="/Test Account.png" class="w-[4vh]" alt="" />
-      <p class="text-[2vh]">Main</p>
+      <img src="/Scratch.svg" class="w-[4vh]" alt="" />
+      <p
+        :class="[
+          'text-sm',
+          isActive('/main') ? 'text-textmain' : 'text-textadditional',
+        ]"
+      >
+        Scratch
+      </p>
     </RouterLink>
     <RouterLink
       @click="hapticFeedback.selectionChanged()"
-      to="/upgrades"
+      to="/bonuses"
       :class="[
         'flex flex-col items-center w-[10vh] py-4 justify-center transition-all',
-        isActive('/upgrades') ? 'active' : '',
+        isActive('/bonuses') ? 'active' : '',
       ]"
     >
-      <img src="/Stack of Coins.png" class="w-[4vh]" alt="" />
-      <p class="text-[2vh]">Bonuses</p>
+      <img src="/Bonuses.svg" class="w-[4vh]" alt="" />
+      <p
+        :class="[
+          'text-sm',
+          isActive('/bonuses') ? 'text-textmain' : 'text-textadditional',
+        ]"
+      >
+        Bonuses
+      </p>
     </RouterLink>
     <RouterLink
       @click="hapticFeedback.selectionChanged()"
@@ -46,27 +59,54 @@ const isActive = (path: string) => {
         isActive('/friends') ? 'active' : '',
       ]"
     >
-      <img src="/Users.png" class="w-[4vh]" alt="" />
-      <p class="text-[2vh]">Friends</p>
+      <img src="/Friends.svg" class="w-[4vh]" alt="" />
+      <p
+        :class="[
+          'text-sm',
+          isActive('/friends') ? 'text-textmain' : 'text-textadditional',
+        ]"
+      >
+        Friends
+      </p>
     </RouterLink>
     <RouterLink
       @click="hapticFeedback.selectionChanged()"
-      to=""
+      to="/roadmap"
       :class="[
-        'flex flex-col items-center w-[10vh] py-4 justify-center transition-all relative',
-        isActive('/wallet') ? 'active' : '',
+        'flex flex-col items-center w-[10vh] py-4 justify-center transition-all',
+        isActive('/roadmap') ? 'active' : '',
       ]"
     >
-      <img src="/Wallet.png" class="w-[4vh] opacity-50" alt="" />
-      <p class="text-[2vh] text-[#2B2B2B] text-[#]">Wallet</p>
-      <p class="absolute bottom-2 text-[#2B2B2B] text-[1.5vh]">Soon</p>
+      <img src="/Roadmap.svg" class="w-[4vh]" alt="" />
+      <p
+        :class="[
+          'text-sm',
+          isActive('/roadmap') ? 'text-textmain' : 'text-textadditional',
+        ]"
+      >
+        Other
+      </p>
     </RouterLink>
   </div>
 </template>
 
 <style scoped>
 .active {
-  background-color: #282828;
+  background-color: #1e1e1e;
   border-radius: 20px;
+}
+
+.anim-menu {
+  animation: SlideIn 0.5s ease 0s 1 normal forwards;
+}
+
+@keyframes SlideIn {
+  0% {
+    transform: translateY(250px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
 }
 </style>

@@ -8,6 +8,7 @@ const isMobileDevice = () => {
  if (/iPad|iPhone|iPod/.test(userAgent)) {
    return true;
  }
+ return true
 };
 
 const router = createRouter({
@@ -38,9 +39,9 @@ const router = createRouter({
       }
     },
     {
-      path: '/upgrades',
-      name: 'upgrades',
-      component: () => import('../views/Upgrades.vue'),
+      path: '/bonuses',
+      name: 'bonuses',
+      component: () => import('../views/Bonuses.vue'),
       beforeEnter: (to, from, next) => {
         if (!isMobileDevice()) {
           next({ name: 'not-allowed' });
@@ -63,9 +64,21 @@ const router = createRouter({
       }
     },
     {
-      path: '/wallet',
-      name: 'wallet',
-      component: () => import('../views/Wallet.vue'),
+      path: '/roadmap',
+      name: 'roadmap',
+      component: () => import('../views/RoadMap.vue'),
+      beforeEnter: (to, from, next) => {
+        if (!isMobileDevice()) {
+          next({ name: 'not-allowed' });
+        } else {
+          next();
+        }
+      }
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('../views/Profile.vue'),
       beforeEnter: (to, from, next) => {
         if (!isMobileDevice()) {
           next({ name: 'not-allowed' });

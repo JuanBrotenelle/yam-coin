@@ -3,8 +3,14 @@ export default {
   purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   content: [],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'textmain': '#e3e3e3',
+        'textadditional': '#404040',
+        'components': '#161616',
+        'componentsadditional': '#232323',
+      },
+    },
   },
   plugins: [],
 }
-

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { defineProps } from "vue";
 const props = defineProps<{
+  index: number;
   friend: {
     _id: string;
     userId: number;
@@ -8,15 +9,70 @@ const props = defineProps<{
     lastName: string;
     photoUrl: string;
     isPremium: boolean;
+    accountExperience: number;
   };
 }>();
+
+const objectCompare: {
+  1: number;
+  2: number;
+  3: number;
+  4: number;
+  5: number;
+  6: number;
+  7: number;
+  8: number;
+  9: number;
+  10: number;
+  11: number;
+  12: number;
+  13: number;
+  14: number;
+  15: number;
+} = {
+  "1": 250,
+  "2": 750,
+  "3": 1500,
+  "4": 2500,
+  "5": 3750,
+  "6": 5250,
+  "7": 8000,
+  "8": 10000,
+  "9": 12000,
+  "10": 14250,
+  "11": 18000,
+  "12": 25000,
+  "13": 30000,
+  "14": 37000,
+  "15": 50000,
+};
+
+function getLevel(xp: number) {
+  let level = 0;
+  if (xp >= 50000) {
+    level = 15;
+    return level;
+  }
+  for (let i in objectCompare) {
+    if (xp < objectCompare[i as unknown as keyof typeof objectCompare]) {
+      level = Number(i) - 1;
+      break;
+    }
+  }
+  return level;
+}
 </script>
 
 <template>
   <div
-    class="bg-[#2B2B2B] p-2 w-full flex flex-row items-center rounded-[25px]"
+    class="bg-components p-2 w-full flex flex-row items-center rounded-[25px]"
   >
     <div class="flex flex-row gap-3">
+      <p
+        class="flex flex-col items-center justify-center font-bold text-textadditional text-2xl"
+      >
+        #{{ props.index + 4 }}
+      </p>
       <div class="h-[8vh] w-[8vh] rounded-[20px]">
         <img
           :src="props.friend.photoUrl ? props.friend.photoUrl : '/NoAvatar.png'"
@@ -25,7 +81,7 @@ const props = defineProps<{
         />
       </div>
       <div class="flex flex-col">
-        <div class="flex flex-row gap-1 items-start">
+        <div class="flex flex-row gap-1 items-center">
           <p class="text-[2vh]">{{ props.friend.firstName }}</p>
           <svg
             v-if="props.friend.isPremium"
@@ -43,8 +99,9 @@ const props = defineProps<{
             ></path>
           </svg>
         </div>
-        <p v-if="props.friend.isPremium" class="text-[2vh]">+0.050 per hour</p>
-        <p v-else class="text-[2vh]">+0.010 per hour</p>
+        <p class="text-textadditional">
+          Activity level: {{ getLevel(props.friend.accountExperience) }}
+        </p>
       </div>
     </div>
   </div>

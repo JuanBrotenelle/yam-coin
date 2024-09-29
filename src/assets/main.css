@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gabarito:wght@400..900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -9,15 +9,57 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    color: aliceblue;
-    font-family: 'Goldman', sans-serif;
+    font-family: 'Gabarito', sans-serif;
     user-select: none;
+    overflow: hidden;
 }
 
 body {
     background: #242424;
-    background: linear-gradient(45deg, rgba(36,36,36,1) 0%, rgba(29,29,29,1) 100%);
-    max-width: 1290px;
-    height: var(--tg-viewport-stable-height);
+    background: linear-gradient(90deg, rgba(27,27,27,1) 0%, rgba(29,29,29,1) 100%);
     overflow-x: hidden;
+    color: #E3E3E3;
 }
+
+
+/* iPhone 15 и аналогичные (320px - 340px) */
+@media (min-width: 320px) and (max-width: 340px) {
+    html {
+      font-size: 12px;
+    }
+  }
+  
+  /* iPhone 12 Mini, 13 Mini и аналогичные (330px - 350px) */
+  @media (min-width: 330px) and (max-width: 350px) {
+    html {
+      font-size: 13px;
+    }
+  }
+  
+  /* iPhone 11 Pro и аналогичные (340px - 375px) */
+  @media (min-width: 340px) and (max-width: 375px) {
+    html {
+      font-size: 14px;
+    }
+  }
+  
+  /* iPhone 12, 13, 14 и аналогичные (350px - 390px) */
+  @media (min-width: 350px) and (max-width: 390px) {
+    html {
+      font-size: 15px;
+    }
+  }
+  
+  /* iPhone 12 Pro Max, 14 Pro и аналогичные (390px - 430px) */
+  @media (min-width: 390px) and (max-width: 430px) {
+    html {
+      font-size: 16px;
+    }
+  }
+  
+  /* iPhone 15 Pro, 16 и выше (400px и больше) */
+  @media (min-width: 400px) {
+    html {
+      font-size: 17px;
+    }
+  }

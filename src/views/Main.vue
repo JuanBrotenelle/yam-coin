@@ -1,155 +1,97 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, computed, watch, nextTick } from "vue";
+import { ref, onMounted, onUnmounted, nextTick, watch, computed } from "vue";
 import { useScratchGame } from "../composables/useScratchGame";
-import HeaderMain from "../components/Header/HeaderMain.vue";
-import PopupPrize from "../components/PopupPrize.vue";
-import { useUserInfo } from "../stores/counter";
-import { animateNumber } from "../composables/useAnimateNumber";
+import { useUserStore } from "@/stores/Store";
 
-const userInfo = useUserInfo();
-const usedBonuses = computed(() =>
-  userInfo.bonuses.default.filter((bonus) => bonus.status === "inactive")
-);
-const PopupPrizeValue = ref(false);
-const PopupPrizeFunction = () => {
-  PopupPrizeValue.value = !PopupPrizeValue.value;
-};
+const userStore = useUserStore();
+let currentCombo = computed(() => userStore.game.combo);
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);
-const balanceRef = ref(userInfo.userYams);
 
-const { setup, cleanup } = useScratchGame(
-  canvasRef,
-  PopupPrizeValue,
-  PopupPrizeFunction
-);
-
-const timeRemaining = ref<{ hours: string; minutes: string; seconds: string }>({
-  hours: "00",
-  minutes: "00",
-  seconds: "00",
-});
-
-const updateTimeRemaining = () => {
-  const now = new Date();
-  const nextMidnight = new Date();
-
-  nextMidnight.setUTCHours(24, 0, 0, 0);
-
-  const diff = nextMidnight.getTime() - now.getTime();
-
-  if (diff <= 0) {
-    window.location.reload();
-  }
-
-  const hours = Math.floor(diff / (1000 * 60 * 60));
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-  timeRemaining.value = {
-    hours: String(hours).padStart(2, "0"),
-    minutes: String(minutes).padStart(2, "0"),
-    seconds: String(seconds).padStart(2, "0"),
-  };
-};
+const { setup, cleanup } = useScratchGame(canvasRef);
 
 onMounted(async () => {
   await nextTick();
-
   if (canvasRef.value) {
     setup();
   }
-
-  updateTimeRemaining();
-  const timer = setInterval(updateTimeRemaining, 1000);
-
-  onUnmounted(() => {
-    cleanup();
-    clearInterval(timer);
-  });
 });
 
-watch(
-  () => userInfo.userYams,
-  (newYams, oldYams) => {
-    animateNumber(oldYams, newYams, 1000, (value: number) => {
-      balanceRef.value = value;
-    });
-  }
-);
+onUnmounted(() => {
+  cleanup();
+});
 </script>
 
 <template>
-  <PopupPrize
-    v-if="PopupPrizeValue === true"
-    :hide-popup="PopupPrizeFunction"
-  />
-  <div class="relative h-full">
-    <HeaderMain />
-    <p class="text-[2vh] text-center px-[10vw] mt-5 relative">Your Balance:</p>
-    <p class="text-[8vh] text-center px-[10vw] mt-[-2vh] font-bold relative">
-      {{ balanceRef.toFixed(3) }}
-    </p>
+  <div
+    class="w-full py-2 flex flex-row gap-10 items-center justify-center bg-components rounded-[25px] my-5"
+  >
     <div
-      v-if="usedBonuses.length !== 0"
-      class="relative flex flex-col justify-center items-center bg-[#2B2B2B] rounded-[5.5rem] border-[#424242] h-[50vh] w-full border-8"
+      class="bg-componentsadditional w-16 h-16 rounded-[10px] flex items-center justify-center text-2xl"
+    >
+      <p
+        v-if="currentCombo[0].status === 'used'"
+        class="text-2xl animate-element"
+      >
+        {{ currentCombo[0].status === "used" ? currentCombo[0].display : "" }}
+      </p>
+    </div>
+    <div
+      class="bg-componentsadditional w-16 h-16 rounded-[10px] flex items-center justify-center text-2xl"
+    >
+      <p
+        v-if="currentCombo[1].status === 'used'"
+        class="text-2xl animate-element"
+      >
+        {{ currentCombo[1].status === "used" ? currentCombo[1].display : "" }}
+      </p>
+    </div>
+    <div
+      class="bg-componentsadditional w-16 h-16 rounded-[10px] flex items-center justify-center text-2xl"
+    >
+      <p
+        v-if="currentCombo[2].status === 'used'"
+        class="text-2xl animate-element"
+      >
+        {{ currentCombo[2].status === "used" ? currentCombo[2].display : "" }}
+      </p>
+    </div>
+  </div>
+  <div class="relative h-full">
+    <div
+      class="relative flex flex-col justify-center items-center bg-componentsadditional rounded-[25px] border-components h-[55vh] w-full border-8"
     >
       <canvas
         id="Scratch-area"
         ref="canvasRef"
-        class="rounded-[5rem] absolute h-full w-full"
+        class="rounded-[18px] absolute h-full w-full"
       >
         Your browser does not support the canvas element.
       </canvas>
-      <p
-        v-if="
-          usedBonuses[0].type === 'coins' ||
-          usedBonuses[0].type === 'hourly_income'
-        "
-        class="text-[6vh] bonus-text-selector"
-      >
-        {{ usedBonuses[0].value }}
+      <p class="text-[25vh] bonus-text-selector">
+        {{
+          currentCombo.filter((element) => element.status === "inactive")[0]
+            ? currentCombo.filter((element) => element.status === "inactive")[0]
+                .display
+            : ""
+        }}
       </p>
-      <p v-else class="text-[6vh] bonus-text-selector">💎</p>
-    </div>
-    <p v-if="usedBonuses.length !== 0" class="text-[3vh] text-center mt-5">
-      Scratch. Left {{ usedBonuses.length }}/3
-    </p>
-    <div
-      v-if="usedBonuses.length === 0"
-      class="text-center mt-5 flex flex-col items-center bg-[#242424] rounded-[25px] mt-5 p-10"
-    >
-      <svg
-        width="100"
-        height="100"
-        viewBox="0 0 706 706"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M353 25C251.736 25 169.091 107.542 169.091 208.68V261.16H116.545C87.5141 261.16 64 284.645 64 313.64V628.52C64 657.515 87.5141 681 116.545 681H589.455C618.486 681 642 657.515 642 628.52V313.64C642 284.645 618.486 261.16 589.455 261.16H536.909V208.68C536.909 110.846 459.052 32.0472 362.339 26.8962C359.368 25.7009 356.203 25.0582 353 25ZM353 77.48C425.872 77.48 484.364 135.899 484.364 208.68V261.16H221.636V208.68C221.636 135.899 280.128 77.48 353 77.48Z"
-          fill="white"
-        />
-      </svg>
-
-      <div
-        class="flex items-center space-x-2 bg-[#2B2B2B] rounded-[25px] mt-5 p-2"
-      >
-        <div class="text-[6vh] font-bold">
-          {{ timeRemaining.hours }}
-        </div>
-        <p class="text-[6vh] font-bold">:</p>
-        <div class="text-[6vh] font-bold">
-          {{ timeRemaining.minutes }}
-        </div>
-        <p class="text-[6vh] font-bold">:</p>
-        <div class="text-[6vh] font-bold">
-          {{ timeRemaining.seconds }}
-        </div>
-      </div>
-      <p class="text-[2vh] mt-5">Times remaining for next bonuses</p>
     </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.animate-element {
+  animation: Opacity 0.2s ease 0s 1 normal forwards;
+}
+
+@keyframes Opacity {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+</style>
