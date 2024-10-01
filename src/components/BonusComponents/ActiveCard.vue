@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { defineProps } from "vue";
 import { initHapticFeedback } from "@telegram-apps/sdk";
-import { useUserStore } from "../../stores/Store";
+import { useUserStore } from "@/stores/Store";
 import axios from "axios";
 const hapticFeedback = initHapticFeedback();
 const userInfo = useUserStore();
-import { applyResponseDataToStore } from "../../composables/storageApplier";
+import { applyResponseDataToStore } from "@/composables/storageApplier";
 
 const props = defineProps<{
   gift: {
@@ -32,7 +32,7 @@ const claimBonus = async () => {
     const { _id: bonusId, value, type } = props.gift;
 
     const response = await axios.post(
-      "http://localhost:3000/gifts",
+      "https://yamonton.space/gifts",
       {
         userId,
         bonusId,

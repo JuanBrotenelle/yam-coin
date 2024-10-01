@@ -2,8 +2,8 @@
 import { defineProps } from "vue";
 import { postEvent } from "@telegram-apps/sdk";
 import { initHapticFeedback } from "@telegram-apps/sdk";
-import { useUserStore } from "../../stores/Store";
-import { applyResponseDataToStore } from "../../composables/storageApplier";
+import { useUserStore } from "@/stores/Store";
+import { applyResponseDataToStore } from "@/composables/storageApplier";
 import axios from "axios";
 
 const userInfo = useUserStore();
@@ -33,7 +33,7 @@ const claimTaskBonus = async () => {
     const { _id: bonusId, value } = props.task;
 
     const response = await axios.post(
-      "http://localhost:3000/tasks",
+      "https://yamonton.space/tasks",
       {
         userId,
         bonusId,

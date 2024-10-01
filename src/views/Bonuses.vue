@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed } from "vue";
 import { initHapticFeedback } from "@telegram-apps/sdk";
-import ActiveCard from "../components/BonusComponents/ActiveCard.vue";
-import HistoryCard from "../components/BonusComponents/Task.vue";
-import { animateNumber } from "../composables/useAnimateNumber";
-import { useUserStore } from "../stores/Store";
+import ActiveCard from "@/components/BonusComponents/ActiveCard.vue";
+import HistoryCard from "@/components/BonusComponents/Task.vue";
+import { useUserStore } from "@/stores/Store";
 
 const userStore = useUserStore();
 const hapticFeedback = initHapticFeedback();

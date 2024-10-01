@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, nextTick, watch, computed } from "vue";
-import { useScratchGame } from "../composables/useScratchGame";
+import { ref, onMounted, onUnmounted, nextTick, computed } from "vue";
+import { useScratchGame } from "@/composables/useScratchGame";
 import { useUserStore } from "@/stores/Store";
 
 const userStore = useUserStore();

@@ -46,7 +46,7 @@ const objectCompare: {
 const upgradeIncome = async () => {
   try {
     const response = await axios.post(
-      "http://localhost:3000/upgradeincome",
+      "https://yamonton.space/upgradeincome",
       {
         token: userInfo.authToken,
         userId: userInfo.user.userId,
@@ -68,7 +68,7 @@ const upgradeIncome = async () => {
 const upgradeCombo = async () => {
   try {
     const response = await axios.post(
-      "http://localhost:3000/upgradecombo",
+      "https://yamonton.space/upgradecombo",
       {
         token: userInfo.authToken,
         userId: userInfo.user.userId,
@@ -91,7 +91,7 @@ const upgradeCombo = async () => {
 const requestUpdateIncomeCost = async (): Promise<number> => {
   try {
     const response = await axios.post(
-      "http://localhost:3000/preupgradeincome",
+      "https://yamonton.space/preupgradeincome",
       {
         token: userInfo.authToken,
         userId: userInfo.user.userId,
@@ -113,7 +113,7 @@ const requestUpdateComboCost = async (): Promise<number> => {
   if (userInfo.game.comboLevel >= 5) return 0;
   try {
     const response = await axios.post(
-      "http://localhost:3000/preupgradecombo",
+      "https://yamonton.space/preupgradecombo",
       {
         token: userInfo.authToken,
         userId: userInfo.user.userId,

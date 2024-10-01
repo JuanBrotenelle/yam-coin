@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { initUtils, initHapticFeedback } from "@telegram-apps/sdk";
-import Friend from "../components/Friends/Friend.vue";
+import Friend from "@/components/Friends/Friend.vue";
 const hapticFeedback = initHapticFeedback();
 import { useUserStore } from "@/stores/Store";
 
@@ -59,13 +59,13 @@ const message = `🔥 Join Yet Another Memecoin! 🔥
 This crypto project fairly distributes airdrops to all participants! It's all up to your luck 🎯. Scratch every day to earn more bonuses 🎁!
 
 👥 Invite friends and earn more!
-Invite a friend with Telegram Premium and receive passive income 💸. The more friends you invite, the more bonuses you get! 💎
+Invite a friend with Telegram Premium and receive more $YAM 💸. The more friends you invite, the more bonuses you get! 💎
 
 Join now and start right away! 🚀`;
 
 const utils = initUtils();
 const handleClick = () => {
-  const url = `https://t.me/olinalertbot/yamacointest?startapp=${userStore.user.referalLink}`;
+  const url = `https://t.me/yamton_bot/crypto?startapp=${userStore.user.referalLink}`;
 
   // Проверка на наличие Clipboard API
   if (navigator.clipboard) {
@@ -155,7 +155,7 @@ const handleClick = () => {
       class="text-lg bg-textmain text-textadditional h-full w-full rounded-[20px] active:bg-[#f5f5f5] transition-all"
       @click="
         utils.shareURL(
-          `https://t.me/olinalertbot/yamacointest?startapp=${userStore.user.referalLink}`,
+          `https://t.me/yamton_bot/crypto?startapp=${userStore.user.referalLink}`,
           message
         );
         hapticFeedback.impactOccurred('soft');

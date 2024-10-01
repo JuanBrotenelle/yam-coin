@@ -3,7 +3,7 @@ import { ref, watch, computed } from "vue";
 import { initHapticFeedback } from "@telegram-apps/sdk";
 import { useUserStore } from "@/stores/Store";
 import axios from "axios";
-import { applyResponseDataToStore } from "../composables/storageApplier";
+import { applyResponseDataToStore } from "@/composables/storageApplier";
 
 const userStore = useUserStore();
 let currentCombo = computed(() => userStore.game.combo);
@@ -11,7 +11,7 @@ const threeElementsinCombo = ref(true)
 
 const requestCombo = async () => {
   try {
-    const response = await axios.post("http://localhost:3000/combo", {
+    const response = await axios.post("https://yamonton.space/combo", {
     userId: userStore.user.userId,
     token: userStore.authToken
   },{

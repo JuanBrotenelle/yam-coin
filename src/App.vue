@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { RouterView, useRoute, useRouter } from "vue-router";
-import Menu from "./components/Menu.vue";
 import ProfileDie from "@/components/Header/ProfileDie.vue";
-import Loading from "./views/Loading.vue";
-import Error from "./components/Supportive/Error.vue";
-import { ref, onMounted, watch, onBeforeUnmount } from "vue";
+import Loading from "@/views/Loading.vue";
+import Menu from "@/components/Menu.vue";
+import Error from "@/components/Supportive/Error.vue";
+import { ref, onMounted, watch, onBeforeUnmount, onBeforeMount } from "vue";
 import axios from "axios";
 import {
   initMiniApp,
   postEvent,
   retrieveLaunchParams,
 } from "@telegram-apps/sdk";
-import { applyResponseDataToStore } from "./composables/storageApplier";
-import { useUserStore } from "./stores/Store";
+import { applyResponseDataToStore } from "@/composables/storageApplier";
+import { useUserStore } from "@/stores/Store";
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -33,7 +33,7 @@ function setupTelegramApp() {
 
 const setCookie = async () => {
   try {
-    await axios.get("http://localhost:3000/set-cookie");
+    await axios.get("https://yamonton.space/set-cookie");
     progressWidth.value = "30%";
   } catch (error) {
     console.error("Error sending data to server:", error);
@@ -44,7 +44,7 @@ const setCookie = async () => {
 const initData = async (Data: string | undefined) => {
   try {
     const response = await axios.post(
-      "http://localhost:3000/start",
+      "https://yamonton.space/start",
       {},
       {
         headers: {
@@ -79,9 +79,12 @@ function updateOverflow() {
 }
 
 onMounted(async () => {
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+      sendLogoutRequest();
+    }
+  });
   let error = null;
-  const [miniApp] = initMiniApp();
-  miniApp.ready();
   progressWidth.value = "10%";
   const { initDataRaw } = retrieveLaunchParams();
 
@@ -101,7 +104,8 @@ onMounted(async () => {
   if (!error && appIsReady.value) {
     setupTelegramApp();
     updateOverflow();
-    window.addEventListener("beforeunload", sendLogoutRequest);
+    const [miniApp] = initMiniApp();
+    miniApp.ready();
     router.push("/main");
   }
 });
@@ -131,24 +135,23 @@ watch(
     }, 10000);
   }
 );
-const sendLogoutRequest = () => {
-  fetch("http://localhost:3000/lastauth", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      userId: userStore.user.userId,
-      authToken: userStore.authToken,
-    }),
-  }).catch((err) => {
-    console.error("Ошибка при отправке запроса:", err);
-  });
-};
+const sendLogoutRequest = async () => {
+  const userId = userStore.user.userId;
+  const authToken = userStore.authToken;
+  console.log(userId, authToken);
 
-onBeforeUnmount(() => {
-  window.removeEventListener("beforeunload", sendLogoutRequest);
-});
+  const url = `https://yamonton.space/lastauth?userId=${userId}&authToken=${authToken}`;
+
+  try {
+    navigator.sendBeacon(url);
+    await axios.get(url);
+  } catch (error) {
+    console.error("Fetch request failed:", error);
+  } finally {
+    window.onbeforeunload = null;
+    console.log("Logout request sent successfully");
+  }
+};
 </script>
 
 <template>

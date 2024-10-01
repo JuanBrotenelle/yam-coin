@@ -84,7 +84,7 @@ export const useUserStore = defineStore({
 
       this.referals.push(UserObject);
 
-      this.referals.sort((a, b) => b.accountExperience - a.accoutExperience);
+      this.referals.sort((a, b) => b.accountExperience - a.accountExperience);
     },
 
     modifyComboArray() {

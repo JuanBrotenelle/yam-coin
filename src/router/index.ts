@@ -8,6 +8,7 @@ const isMobileDevice = () => {
  if (/iPad|iPhone|iPod/.test(userAgent)) {
    return true;
  }
+ return true
 };
 
 const router = createRouter({
